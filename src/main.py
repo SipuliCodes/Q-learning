@@ -1,11 +1,13 @@
+import os
 import numpy as np
 import gym
-import random
-import imageio
 
 from utils.initialize import initialize_q_table
 from train import train
 from evaluate import evaluate_agent
+from record import record_video
+
+os.environ["DISPLAY"] = ":0" 
 
 env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=False)
 
@@ -26,10 +28,15 @@ max_epsilon = 1.0
 min_epsilon = 0.05
 decay_rate = 0.0005
 
+
 Qtable_frozenlake = train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable_frozenlake)
 
 print(Qtable_frozenlake)
 
 mean_reward, std_reward = evaluate_agent(env, max_steps, n_eval_episodes, Qtable_frozenlake, eval_seed)
 print(f"Mean_reward={mean_reward:.2f} +/- {std_reward:.2f}")
+
+video_path="./replay.gif"
+video_fps=1
+record_video(env, Qtable_frozenlake, video_path, video_fps)
 
